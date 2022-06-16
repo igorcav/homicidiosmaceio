@@ -12,6 +12,7 @@ bairros <- read.csv(".../bairrosgeo.csv", header = T, stringsAsFactors = F)
 populacao <- read.csv2(".../bairrospop.csv", header = T, stringsAsFactors = F)
 
 
+
 dados %>%
   group_by(Bairro) %>%
   summarise(qtd=n()) %>%
@@ -38,12 +39,20 @@ dados %>%
   leaflet() %>%
   addProviderTiles(providers$OpenStreetMap) %>%  
   addCircleMarkers(
-    lng=~long, 
-    lat=~lat, 
-    radius = ~sqrt(QtdHomicidios)*5,
-    weight = 1,
-    color = "white",
-    #fillColor = "#ffa400",
-    fillColor = "#aa2222",
-    fillOpacity = .6,
-    popup=~Texto) 
+    group = "Quantidade de homicídios",
+    lng=~long, lat=~lat, 
+    radius = ~sqrt(QtdHomicidios)*4,
+    weight = 1, color = "white",
+    fillColor = "#aa2222", fillOpacity = .6,
+    popup=~Texto) %>%
+  addCircleMarkers(
+    group = "Taxa por 100 mil hab.",
+    lng=~long, lat=~lat, 
+    radius = ~sqrt(Taxa)*2,
+    weight = 1, color = "white",
+    fillColor = "orange", fillOpacity = .6,
+    popup=~Texto) %>%
+  addLayersControl(baseGroups = c("Quantidade de homicídios", 
+                                  "Taxa por 100 mil hab."),
+                   options = layersControlOptions(collapsed = F))
+
